@@ -10,6 +10,8 @@
 
 /* symbol table */
 /* hash a symbol */
+
+struct symbol symtab[NHASH];
 extern int yylex(void);
 extern int yyparse(void);
 extern int yylineno;
