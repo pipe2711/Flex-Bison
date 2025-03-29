@@ -22,7 +22,10 @@ cc -o fb3-1 fb3-1.tab.c fb3-1.lex.c fb3-1funcs.c -ll
 ```
 ./fb3-1
 ```
-
+### remover
+```
+rm -f fb3-1.tab.c fb3-1.tab.h fb3-1.lex.c fb3-1
+```
 ### Si todo sale bien deberiamos ya obtener lo siguiente:
 
 ```
