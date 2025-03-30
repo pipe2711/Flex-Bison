@@ -20,7 +20,7 @@
 %token <fn> FUNC
 %token EOL
 
-%token IF THEN ELSE WHILE DO LET DONE FI
+%token IF THEN ELSE WHILE DO LET DONE FI END
 
 
 %nonassoc <fn> CMP
@@ -38,17 +38,23 @@
 
 stmt: IF exp THEN list FI          { $$ = newflow('I', $2, $4, NULL); }
    | IF exp THEN list ELSE list FI { $$ = newflow('I', $2, $4, $6); }
-   | WHILE exp DO list DONE       { printf("DONE"); $$ = newflow('W', $2, $4, NULL); }
-   | exp
+   | WHILE exp DO list DONE        { $$ = newflow('W', $2, $4, NULL); }
+   | IF exp THEN list FI ';'          { $$ = newflow('I', $2, $4, NULL); }
+   | IF exp THEN list ELSE list FI ';' { $$ = newflow('I', $2, $4, $6); }
+   | WHILE exp DO list DONE ';'        { $$ = newflow('W', $2, $4, NULL); }
+
+   | exp ';' /* Para que la gramática no sea ambigua
+   O si no "exp" y "exp list" se reducen a lo mismo (list)
+   */
 ;
 
 list: /* nothing */ { $$ = NULL; }
-   | stmt ' ' list { if ($3 == NULL)
+   | stmt list { if ($2 == NULL)
 	                $$ = $1;
                       else
-			$$ = newast('L', $1, $3);
+			$$ = newast('L', $1, $2);
                     }
-   ;
+;
 
 exp: exp CMP exp          { $$ = newcmp($2, $1, $3); }
    | exp '+' exp          { $$ = newast('+', $1,$3); }
@@ -78,10 +84,12 @@ calclist: /* nothing */
      printf("= %4.4g\n> ", eval($2));
      treefree($2);
     }
-  | calclist LET NAME '(' symlist ')' '=' list EOL {
+  | calclist LET NAME '(' symlist ')' '=' list END EOL {
                        dodef($3, $5, $8);
                        printf("Defined %s\n> ", $3->name); }
-
+  | calclist LET NAME '(' symlist ')' '=' list END ';' EOL {
+                       dodef($3, $5, $8);
+                       printf("Defined %s\n> ", $3->name); }
   | calclist error EOL { yyerrok; printf("> "); }
  ;
 %%
