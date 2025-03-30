@@ -310,8 +310,8 @@ calluser(struct ufncall *f)
   struct symbol *fn = f->s;	/* function name */
   struct symlist *sl;		/* dummy arguments */
   struct ast *args = f->l;	/* actual arguments */
-  double *oldval, *newval;	/* saved arg values */
-  double v;
+  double *oldval;	/* saved arg values */
+  double v, valor_encontrado = 0;
   int nargs;
   int i;
 
@@ -327,42 +327,49 @@ calluser(struct ufncall *f)
 
   /* prepare to save them */
   oldval = (double *)malloc(nargs * sizeof(double));
-  newval = (double *)malloc(nargs * sizeof(double));
-  if(!oldval || !newval) {
-    yyerror("Out of space in %s", fn->name); return 0.0;
+  if(!oldval) {
+    yyerror("Out of space in %s", fn->name);
+    return 0.0;
   }
-  
-  /* evaluate the arguments */
-  for(i = 0; i < nargs; i++) {
-    if(!args) {
-      yyerror("too few args in call to %s", fn->name);
-      free(oldval); free(newval);
-      return 0;
-    }
 
-    if(args->nodetype == 'L') {	/* if this is a list node */
-      newval[i] = eval(args->l);
-      args = args->r;
-    } else {			/* if it's the end of the list */
-      newval[i] = eval(args);
-      args = NULL;
-    }
-  }
-             
-  /* save old values of dummies, assign new ones */
+  /* se guardan los valores antiguos de las variables dummy */
   sl = fn->syms;
   for(i = 0; i < nargs; i++) {
     struct symbol *s = sl->sym;
 
     oldval[i] = s->value;
-    s->value = newval[i];
     sl = sl->next;
   }
 
-  free(newval);
+  sl = fn->syms;
+  /* se evaluan y se guardan los valores nuevos en las variables dummy */
+  int todos_argumentos_evaluados = 1; // true
+  for(i = 0; i < nargs; i++) {
+    struct symbol *s = sl->sym;
+
+    if(!args) {
+      yyerror("too few args in call to %s", fn->name);
+      todos_argumentos_evaluados = 0; // false;
+      break;
+    }
+
+    if(args->nodetype == 'L') {	/* if this is a list node */
+      valor_encontrado = eval(args->l);
+      args = args->r;
+    } else {			/* if it's the end of the list */
+      valor_encontrado = eval(args);
+      args = NULL;
+    }
+
+    s->value = valor_encontrado;
+    sl = sl->next;
+  }
 
   /* evaluate the function */
-  v = eval(fn->func);
+  if (todos_argumentos_evaluados != 0) // distinto a false
+    v = eval(fn->func);
+  else
+    v = 0;
 
   /* put the dummies back */
   sl = fn->syms;
