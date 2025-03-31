@@ -1,6 +1,43 @@
 # 🚀 Flex-Bison
 
-## 📌 Comandos esenciales
+# 📌 Comandos esenciales
+
+## 📁 Utilizando MakeFile:
+
+📌 El uso más común de Makefiles es administrar las dependencias de los archivos fuente de los programas durante la fase de compilación y enlazado (build) , es decir, compilar sólo los archivos que necesitan ser compilados.
+
+📌 En la terminal ejecutamos el siguiente comando:
+
+```
+make fb3-1
+
+```
+
+📌 Si queremos eliminar los archivos podemos utilizar el comando:
+
+```
+make clean
+```
+⚠️ *Se necesita tener instalado make si no lo tienes instalado ejecuta el siguiente comando*
+
+🍏 Para MacOS:
+
+```
+brew install make
+```
+
+🌪️ Para distribuciones basadas en Debian:
+
+```
+sudo apt install make
+```
+
+### 🎯 Ejecutar el programa:
+```bash
+./fb3-1
+```
+
+## Sin usar MakeFile:
 
 ### 🎯 Generar los archivos con **Bison**:
 ```bash
@@ -39,7 +76,7 @@ rm -f fb3-1.tab.c fb3-1.tab.h fb3-1.lex.c fb3-1
 ## 🔄 Cambios y mejoras
 
 ### 📝 **Actualización de cabeceras** 📂
-📌 Se incluyen los archivos `.h` necesarios en la cabecera del archivo y se actualizan los tokens.
+📌 Se incluyen los archivos `.h` (archivos cabecera) y se actualizan los tokens.
 
 ```diff
 
@@ -54,10 +91,10 @@ rm -f fb3-1.tab.c fb3-1.tab.h fb3-1.lex.c fb3-1
 ```
 
 ### 🎯 **Mejoras en la gramática** 📜
-📌 Se ha modificado la gramática para mejorar la sintaxis, eliminando la necesidad de comillas dobles y agregando palabras clave de finalización (`FI`, `DONE`).
+📌 Se ha modificado la gramática para mejorar la sintaxis, eliminando la necesidad de ';' dobles y agregando palabras clave de finalización (`FI`, `DONE`).
 
-📌 Se agrega una regla para que la gramatica no sea ambigua donde se agrega ';' después de toda expresion (exp).
-
+📌 Se añade una regla a la gramatica para evita ambigüedades, la cual consiste en agregar un ';' al final de cada expresion (exp).
+ 
 ```diff
 
 < stmt: IF exp THEN list           { $$ = newflow('I', $2, $4, NULL); }
