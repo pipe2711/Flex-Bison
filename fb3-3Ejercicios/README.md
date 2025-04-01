@@ -3,7 +3,7 @@
 
 ## 🔄 Cambios y mejoras
 
-### 📝 **Actualización de cabeceras** 📂
+## 📝 **Actualización de cabeceras** 📂
 📌 Se incluyen los archivos `.h` (archivos cabecera) y se actualizan los tokens.
 
 ```diff
@@ -18,7 +18,7 @@
 
 ```
 
-### 🎯 **Mejoras en la gramática** 📜
+## 🎯 **Mejoras en la gramática** 📜
 📌 Se ha modificado la gramática para mejorar la sintaxis, eliminando la necesidad de ';' dobles y agregando palabras clave de finalización (`FI`, `DONE`).
 
 📌 Se añade una regla a la gramatica para evita ambigüedades, la cual consiste en agregar un ';' al final de cada expresion (exp).
@@ -43,7 +43,7 @@
 
 ```
 
-### 🛠 **Corrección en la estructura de la gramática** 🏗
+## 🛠 **Corrección en la estructura de la gramática** 🏗
 📌 Se eliminó el `;` del `stmt` y se ajustó el número de parámetros.
 ```diff
 <    | stmt ';' list { if ($3 == NULL)
@@ -56,7 +56,7 @@
 
 ```
 
-### 🔚 **Añadida la palabra clave `END` para funciones** 🎯
+## 🔚 **Añadida la palabra clave `END` para funciones** 🎯
 📌 Ahora, las funciones finalizan con `END` para mayor claridad.
 
 ```diff
